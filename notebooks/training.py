@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 import pickle
 
 # Load dataset
@@ -10,7 +10,7 @@ X = df.drop("phishing", axis=1)
 y = df["phishing"]
 
 # Train model
-model = RandomForestClassifier()
+model = LogisticRegression(max_iter=1000)
 model.fit(X, y)
 
 # Save model

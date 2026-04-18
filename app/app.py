@@ -5,13 +5,12 @@ import os
 app = Flask(__name__)
 
 # Load model
-import os
-import pickle
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, '..', 'models', 'model.pkl')
-
 model = pickle.load(open(model_path, 'rb'))
+
+# Import feature extraction
+from utils.feature_extraction import extract_features
 
 @app.route('/')
 def home():
@@ -19,17 +18,17 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Since your model needs multiple features,
-    # we will just use dummy input for now
-    features = [50,2,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1]
-    
+    url = request.form['url']   # user input
+
+    features = extract_features(url)  # convert URL → features
+
     prediction = model.predict([features])[0]
 
     result = "Phishing Website ❌" if prediction == 1 else "Safe Website ✅"
 
     return render_template("index.html", prediction_text=result)
 
+
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

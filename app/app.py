@@ -17,20 +17,26 @@ def home():
     return render_template("index.html")
 
 # Prediction route
+from utils.feature_extraction import extract_features
+
 @app.route('/predict', methods=['POST'])
 def predict():
-    url = request.form['url']   # user input
+    url = request.form.get('url')
 
-    # Convert URL → features
-    features = extract_features(url)
+    if not url:
+        return render_template("index.html", prediction_text="Please enter a URL ⚠️")
 
-    # Prediction
-    prediction = model.predict([features])[0]
+    try:
+        features = extract_features(url)
 
-    # Result
-    result = "Phishing Website ❌" if prediction == 1 else "Safe Website ✅"
+        prediction = model.predict([features])[0]
 
-    return render_template("index.html", prediction_text=result)
+        result = "Phishing Website ❌" if prediction == 1 else "Safe Website ✅"
+
+        return render_template("index.html", prediction_text=result)
+
+    except Exception as e:
+        return render_template("index.html", prediction_text=f"Error: {str(e)}")
 
 # Run app
 if __name__ == "__main__":

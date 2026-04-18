@@ -1,14 +1,15 @@
 from flask import Flask, render_template, request
 import pickle
 import os
+
+# ✅ correct import
 from utils.feature_extraction import extract_features
 
 app = Flask(__name__)
 
-# Load model
+# ✅ load model
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, '..', 'models', 'model.pkl')
-
 model = pickle.load(open(model_path, 'rb'))
 
 # Home page
@@ -17,18 +18,12 @@ def home():
     return render_template("index.html")
 
 # Prediction route
-from utils.feature_extraction import extract_features
-
 @app.route('/predict', methods=['POST'])
 def predict():
-    url = request.form.get('url')
-
-    if not url:
-        return render_template("index.html", prediction_text="Please enter a URL ⚠️")
-
     try:
-        features = extract_features(url)
+        url = request.form['url']
 
+        features = extract_features(url)
         prediction = model.predict([features])[0]
 
         result = "Phishing Website ❌" if prediction == 1 else "Safe Website ✅"

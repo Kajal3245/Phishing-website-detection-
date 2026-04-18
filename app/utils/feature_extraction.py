@@ -2,7 +2,11 @@ import re
 from urllib.parse import urlparse
 
 def extract_features(url):
-    features = []   # ✅ ADD THIS LINE
+    features = []
+
+    # Fix URL
+    if not url.startswith("http"):
+        url = "http://" + url
 
     # 1. URL Length
     features.append(len(url))
@@ -36,7 +40,7 @@ def extract_features(url):
     parsed = urlparse(url)
     features.append(len(parsed.netloc))
 
-    # ✅ padding to 19 features
+    # ✅ IMPORTANT: match model input (19 features)
     while len(features) < 19:
         features.append(0)
 

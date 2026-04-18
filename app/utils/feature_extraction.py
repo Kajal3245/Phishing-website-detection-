@@ -2,7 +2,7 @@ import re
 from urllib.parse import urlparse
 
 def extract_features(url):
-    features = []
+    features = []   # ✅ ADD THIS LINE
 
     # 1. URL Length
     features.append(len(url))
@@ -29,17 +29,15 @@ def extract_features(url):
     # 8. Count of =
     features.append(url.count('='))
 
-    # 9. Count of http/https
+    # 9. Has https
     features.append(1 if "https" in url else 0)
 
     # 10. Length of domain
     parsed = urlparse(url)
     features.append(len(parsed.netloc))
 
-    # 👉 Make sure length = same as training features
-    # If your model expects 17 features, pad with 0
-
-    while len(features) < 17:
+    # ✅ padding to 19 features
+    while len(features) < 19:
         features.append(0)
 
     return features
